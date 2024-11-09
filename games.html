@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Center</title>
+  <style>
+    /* Basic styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #90caf9, #42a5f5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    h1 {
+      color: #ffffff;
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .menu, .game-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    /* Styling the menu buttons */
+    .menu button {
+      margin: 10px;
+      padding: 12px 24px;
+      font-size: 16px;
+      color: #ffffff;
+      background-color: #1976d2;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu button:hover {
+      background-color: #1565c0;
+      transform: scale(1.05);
+    }
+
+    /* Game section container */
+    .game-section {
+      display: none;
+      width: 90%;
+      max-width: 600px;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .game-section h2 {
+      font-size: 1.8em;
+      color: #1976d2;
+      margin-bottom: 20px;
+    }
+
+    /* Tic-Tac-Toe board styling */
+    #ticTacToeBoard {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    #ticTacToeBoard div {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      color: #1976d2;
+      border: 2px solid #1976d2;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #ticTacToeBoard div:hover {
+      background-color: #e3f2fd;
+      color: #42a5f5;
+    }
+
+    /* Rock-Paper-Scissors and Guess the Number styling */
+    .game-section button, .game-section input[type="number"] {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #ffffff;
+      background-color: #1976d2;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .game-section button:hover, .game-section input[type="number"]:hover {
+      background-color: #1565c0;
+      transform: scale(1.05);
+    }
+
+    .game-section input[type="number"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      text-align: center;
+      border-radius: 8px;
+      border: 2px solid #1976d2;
+      outline: none;
+      color: #1976d2;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 500px) {
+      #ticTacToeBoard {
+        grid-template-columns: repeat(3, 80px);
+        gap: 5px;
+      }
+
+      #ticTacToeBoard div {
+        width: 80px;
+        height: 80px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      .game-section h2 {
+        font-size: 1.6em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Center</h1>
+
+  <div class="menu">
+    <button onclick="showGame('ticTacToe')">Tic-Tac-Toe</button>
+    <button onclick="showGame('rockPaperScissors')">Rock-Paper-Scissors</button>
+    <button onclick="showGame('guessNumber')">Guess the Number</button>
+  </div>
+
+  <div id="ticTacToe" class="game-section">
+    <h2>Tic-Tac-Toe</h2>
+    <div id="ticTacToeBoard" style="display: grid; grid-template-columns: repeat(3, 100px); gap: 5px;"></div>
+    <p id="ticTacToeMessage"></p>
+    <button onclick="startTicTacToe()">Restart Game</button>
+  </div>
+
+  <div id="rockPaperScissors" class="game-section">
+    <h2>Rock-Paper-Scissors</h2>
+    <button onclick="playRPS('rock')">Rock</button>
+    <button onclick="playRPS('paper')">Paper</button>
+    <button onclick="playRPS('scissors')">Scissors</button>
+    <p id="rpsResult"></p>
+  </div>
+
+  <div id="guessNumber" class="game-section">
+    <h2>Guess the Number</h2>
+    <p>Guess a number between 1 and 100!</p>
+    <input type="number" id="guessInput" />
+    <button onclick="checkGuess()">Submit Guess</button>
+    <p id="guessMessage"></p>
+    <button onclick="startGuessNumber()">Restart Game</button>
+  </div>
+
+  <script>
+    // Game selection
+    function showGame(game) {
+      document.querySelectorAll('.game-section').forEach(section => {
+        section.style.display = 'none';
+      });
+      document.getElementById(game).style.display = 'block';
+    }
+
+    // Tic-Tac-Toe
+    let ticTacToeBoard, currentPlayer, ticTacToeMessage;
+
+    function startTicTacToe() {
+      ticTacToeBoard = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      ticTacToeMessage = document.getElementById("ticTacToeMessage");
+      ticTacToeMessage.innerText = "Player X's turn";
+      renderTicTacToeBoard();
+    }
+
+    function renderTicTacToeBoard() {
+      const boardDiv = document.getElementById("ticTacToeBoard");
+      boardDiv.innerHTML = '';
+      ticTacToeBoard.forEach((cell, index) => {
+        const cellDiv = document.createElement("div");
+        cellDiv.style.width = "100px";
+        cellDiv.style.height = "100px";
+        cellDiv.style.display = "flex";
+        cellDiv.style.alignItems = "center";
+        cellDiv.style.justifyContent = "center";
+        cellDiv.style.fontSize = "24px";
+        cellDiv.style.border = "1px solid #333";
+        cellDiv.innerText = cell;
+        cellDiv.onclick = () => makeMove(index);
+        boardDiv.appendChild(cellDiv);
+      });
+    }
+
+    function makeMove(index) {
+      if (ticTacToeBoard[index] === '' && !checkWin()) {
+        ticTacToeBoard[index] = currentPlayer;
+        if (checkWin()) {
+          ticTacToeMessage.innerText = `Player ${currentPlayer} wins!`;
+        } else if (!ticTacToeBoard.includes('')) {
+          ticTacToeMessage.innerText = "It's a draw!";
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          ticTacToeMessage.innerText = `Player ${currentPlayer}'s turn`;
+        }
+        renderTicTacToeBoard();
+      }
+    }
+
+    function checkWin() {
+      const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+      return winPatterns.some(pattern =>
+        pattern.every(index => ticTacToeBoard[index] === currentPlayer)
+      );
+    }
+
+    startTicTacToe();
+
+    // Rock-Paper-Scissors
+    function playRPS(choice) {
+      const choices = ["rock", "paper", "scissors"];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
+      const result = document.getElementById("rpsResult");
+      if (choice === computerChoice) {
+        result.innerText = "It's a draw!";
+      } else if (
+        (choice === "rock" && computerChoice === "scissors") ||
+        (choice === "paper" && computerChoice === "rock") ||
+        (choice === "scissors" && computerChoice === "paper")
+      ) {
+        result.innerText = "You win!";
+      } else {
+        result.innerText = "You lose!";
+      }
+    }
+
+    // Guess the Number
+    let targetNumber;
+
+    function startGuessNumber() {
+      targetNumber = Math.floor(Math.random() * 100) + 1;
+      document.getElementById("guessMessage").innerText = '';
+      document.getElementById("guessInput").value = '';
+    }
+
+    function checkGuess() {
+      const guess = Number(document.getElementById("guessInput").value);
+      const message = document.getElementById("guessMessage");
+      if (guess === targetNumber) {
+        message.innerText = "Congratulations! You guessed the number!";
+      } else if (guess < targetNumber) {
+        message.innerText = "Too low! Try again.";
+      } else {
+        message.innerText = "Too high! Try again.";
+      }
+    }
+
+    startGuessNumber();
+  </script>
+</body>
+</html>
