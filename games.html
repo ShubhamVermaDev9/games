@@ -22,12 +22,17 @@
       min-height: 100vh;
       color: #333;
     }
+    main{
+      border:2px solid black;
+      padding:4rem;
+    }
 
     h1 {
       color: #ffffff;
       font-size: 2.5em;
       margin-bottom: 15px;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      text-align: center;
     }
 
     .menu, .game-section {
@@ -148,40 +153,47 @@
         font-size: 1.6em;
       }
     }
+    #snakeGameCanvas {
+      border: 2px solid #333;
+      background: #e0f7fa;
+      margin-top: 20px;
+    }
+
   </style>
 </head>
 <body>
-  <h1>Game Center</h1>
-
-  <div class="menu">
-    <button onclick="showGame('ticTacToe')">Tic-Tac-Toe</button>
-    <button onclick="showGame('rockPaperScissors')">Rock-Paper-Scissors</button>
-    <button onclick="showGame('guessNumber')">Guess the Number</button>
-  </div>
-
-  <div id="ticTacToe" class="game-section">
-    <h2>Tic-Tac-Toe</h2>
-    <div id="ticTacToeBoard" style="display: grid; grid-template-columns: repeat(3, 100px); gap: 5px;"></div>
-    <p id="ticTacToeMessage"></p>
-    <button onclick="startTicTacToe()">Restart Game</button>
-  </div>
-
-  <div id="rockPaperScissors" class="game-section">
-    <h2>Rock-Paper-Scissors</h2>
-    <button onclick="playRPS('rock')">Rock</button>
-    <button onclick="playRPS('paper')">Paper</button>
-    <button onclick="playRPS('scissors')">Scissors</button>
-    <p id="rpsResult"></p>
-  </div>
-
-  <div id="guessNumber" class="game-section">
-    <h2>Guess the Number</h2>
-    <p>Guess a number between 1 and 100!</p>
-    <input type="number" id="guessInput" />
-    <button onclick="checkGuess()">Submit Guess</button>
-    <p id="guessMessage"></p>
-    <button onclick="startGuessNumber()">Restart Game</button>
-  </div>
+  <main>
+    <h1 >Game Center</h1>
+        
+          <div class="menu">
+            <button onclick="showGame('ticTacToe')">Tic-Tac-Toe</button>
+            <button onclick="showGame('rockPaperScissors')">Rock-Paper-Scissors</button>
+            <button onclick="showGame('guessNumber')">Guess the Number</button>
+          </div>
+          <div id="ticTacToe" class="game-section">
+            <h2>Tic-Tac-Toe</h2>
+            <div id="ticTacToeBoard" style="display: grid; grid-template-columns: repeat(3, 100px); gap: 5px;"></div>
+            <p id="ticTacToeMessage"></p>
+            <button onclick="startTicTacToe()">Restart Game</button>
+          </div>
+        
+          <div id="rockPaperScissors" class="game-section">
+            <h2>Rock-Paper-Scissors</h2>
+            <button onclick="playRPS('rock')">Rock</button>
+            <button onclick="playRPS('paper')">Paper</button>
+            <button onclick="playRPS('scissors')">Scissors</button>
+            <p id="rpsResult"></p>
+          </div>
+        
+          <div id="guessNumber" class="game-section">
+            <h2>Guess the Number</h2>
+            <p>Guess a number between 1 and 10!</p>
+            <input type="number" id="guessInput" />
+            <button onclick="checkGuess()">Submit Guess</button>
+            <p id="guessMessage"></p>
+            <button onclick="startGuessNumber()">Restart Game</button>
+          </div>
+  </main>
 
   <script>
     // Game selection
@@ -287,8 +299,6 @@
         message.innerText = "Too high! Try again.";
       }
     }
-
-    startGuessNumber();
   </script>
 </body>
 </html>
